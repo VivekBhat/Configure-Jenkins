@@ -8,6 +8,12 @@
 - 20% Concepts
 - 20% Screencast and following instructions
 
+##Task 1 & 2: Ansible Playbook
+
+PlayBook for configuring jenkins :
+
+* [site.yml](http://github.ncsu.edu/vbhat/hw1-b/site.yml)  
+
 ##Task 3: Concepts
 
 ###Q1. What are some benefits of continuous integration?
@@ -79,4 +85,10 @@ In some situations identifying the reason for build failure can become really di
 </li>
 
 </ol>
+
+##Task 4: Screencast
+
+ Screencast of the assignment:
+
+ * [Screencast](https://youtu.be/iGHKJgjOu4Q)  
 

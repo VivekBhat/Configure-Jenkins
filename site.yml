@@ -1,0 +1,93 @@
+---
+- name: Setup python and basic dependencies
+  hosts: 127.0.0.1
+  become: yes
+  vars:
+     packages:
+       - debconf-utils
+       - git
+       - gcc
+       - make
+       - python-dev
+       - python-pip
+       - python-setuptools
+       - python-lxml
+       - vim
+       - libffi-dev
+       - libssl-dev
+       - libxml2-dev 
+       - libxslt1-dev 
+       - libjpeg8-dev 
+       - zlib1g-dev
+
+       
+  tasks:
+  - name: Install packages for host machine (ansible server)
+    apt: pkg="{{item}}" state=present update_cache=true
+    with_items: "{{packages}}"
+  - pip:
+      name: lxml
+
+
+- hosts: 192.168.33.100
+  become: yes
+  vars:
+     packages:
+       - debconf-utils
+       - git
+       - gcc
+       - make
+       - python-dev
+       - python-pip
+       - python-setuptools
+       - python-lxml
+       - vim
+       - libffi-dev
+       - libssl-dev
+       - libxml2-dev 
+       - libxslt1-dev 
+       - libjpeg8-dev 
+       - zlib1g-dev
+  tasks:
+   - name: Install packages for node machine
+     apt: pkg="{{item}}" state=present update_cache=true
+     with_items: "{{packages}}"
+   - pip:
+       name: python-jenkins
+   - name: Install Java 8  dependencies
+     apt: name=python-software-properties
+   - name: Oracle licence Consent
+     debconf: name=oracle-java8-installer question=shared/accepted-oracle-license-v1-1 vtype=select value=true
+   - name: Install Java 8
+     apt: name=oracle-java8-installer force=yes
+   - name: Update apt-get
+     action: apt update_cache=yes
+   - name: Install Maven
+     apt: pkg=maven state=present
+   - name: Install Jenkins
+     apt: name=jenkins state=present install_recommends=yes
+
+   - wait_for:
+       port: 8080
+       host: 192.168.33.100
+       delay: 10
+
+   - wait_for:
+       path: /var/lib/jenkins/secrets/initialAdminPassword
+       delay: 10
+
+   - name: Get Admin credentials
+     shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+     register: initialAdminPassword
+
+   - wait_for:
+       port: 8080
+       host: 192.168.33.100
+       delay: 25
+
+   - jenkins_job:
+         config: "{{ lookup('template', 'template/jenkinsjob.xml.j2') }}"
+         name: HW1B
+         password: "{{ initialAdminPassword.stdout }}"
+         url: "http://192.168.33.100:8080"
+         user: admin
