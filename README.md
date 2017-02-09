@@ -12,7 +12,7 @@
 
 PlayBook for configuring jenkins :
 
-* [site.yml](http://github.ncsu.edu/vbhat/hw1-b/site.yml)  
+* [site.yml](https://github.ncsu.edu/vbhat/HW1-B/blob/master/site.yml)  
 
 ##Task 3: Concepts
 
